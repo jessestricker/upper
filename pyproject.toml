@@ -25,6 +25,6 @@ ruff = "^0.3.0"
 [tool.ruff]
 target-version = "py312"
 lint.select = ["ALL"]
-lint.ignore = ["D", "T201", "COM812", "ISC001"]
+lint.ignore = ["D", "T201", "COM812", "ISC001", "ANN101", "ANN102", "S603"]
 lint.isort.split-on-trailing-comma = false
 format.skip-magic-trailing-comma = true
