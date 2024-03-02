@@ -25,6 +25,14 @@ class PackageManager(ABC):
         return
 
 
+USR_BIN_DIR = Path("/usr/bin")
+SUDO_EXE = USR_BIN_DIR / "sudo"
+APT_GET_EXE = USR_BIN_DIR / "apt-get"
+SNAP_EXE = USR_BIN_DIR / "snap"
+
+APT_REBOOT_REQUIRED_FILE = Path("/run/reboot-required")
+
+
 class Apt(PackageManager):
     @property
     def name(self) -> str:
@@ -32,24 +40,27 @@ class Apt(PackageManager):
 
     def upgrade(self) -> bool:
         return _exec(
-            "/usr/bin/sudo",
-            "--",
-            "/usr/bin/apt-get",
-            "upgrade",
-            "--update",
-            "--assume-yes",
-            "--verbose-versions",
+            [APT_GET_EXE, "upgrade", "--update", "--assume-yes", "--verbose-versions"],
+            use_sudo=True,
         )
 
     def post_upgrade(self) -> None:
-        reboot_required_file = Path("/run/reboot-required")
-        if not reboot_required_file.is_file():
+        if not APT_REBOOT_REQUIRED_FILE.is_file():
             return
 
         logger.warning("A reboot is required.")
 
 
-PACKAGE_MANAGERS = [Apt()]
+class Snap(PackageManager):
+    @property
+    def name(self) -> str:
+        return "Snap"
+
+    def upgrade(self) -> bool:
+        return _exec([SNAP_EXE, "refresh"], use_sudo=True)
+
+
+PACKAGE_MANAGERS = [Apt(), Snap()]
 
 
 def main() -> int | None:
@@ -81,7 +92,11 @@ def main() -> int | None:
     return None
 
 
-def _exec(*cmd: str) -> bool:
-    logger.debug(lambda: f"executing: {shlex.join(cmd)}")
+def _exec(cmd: list[str | Path], *, use_sudo: bool = False) -> bool:
+    if use_sudo:
+        cmd = [SUDO_EXE, "--", *cmd]
+
+    logger.debug(lambda: f"executing: {shlex.join(str(x)for x in cmd)}")
+
     result = subprocess.run(cmd, check=False)
     return result.returncode == 0
