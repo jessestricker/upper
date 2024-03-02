@@ -11,8 +11,8 @@ Upgrade all your packages!
 
 Install with pipx:
 
-```console
-$ pipx install git+https://github.com/jessestricker/upper
+```shell
+pipx install git+https://github.com/jessestricker/upper
 ```
 
 ## Usage
