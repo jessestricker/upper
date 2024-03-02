@@ -25,6 +25,14 @@ ruff = "^0.3.0"
 [tool.ruff]
 target-version = "py312"
 lint.select = ["ALL"]
-lint.ignore = ["D", "T201", "COM812", "ISC001", "ANN101", "ANN102", "S603"]
+lint.ignore = [
+    "D",      # pydocstyle
+    "ANN101", # missing-type-self
+    "ANN102", # missing-type-cls
+    "COM812", # missing-trailing-comma
+    "ISC001", # single-line-implicit-string-concatenation
+    "S603",   # subprocess-without-shell-equals-true
+    "T201",   # print
+]
 lint.isort.split-on-trailing-comma = false
 format.skip-magic-trailing-comma = true
