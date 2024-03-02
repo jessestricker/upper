@@ -1,0 +1,30 @@
+# Copyright 2024 Jesse Stricker.
+# SPDX-License-Identifier: Apache-2.0
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "upper"
+version = "0.1.0"
+description = "Upgrade all your packages!"
+authors = ["Jesse Stricker"]
+license = "Apache-2.0"
+readme = "README.md"
+
+[tool.poetry.scripts]
+upper = "upper:main"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.3.0"
+
+[tool.ruff]
+target-version = "py312"
+lint.select = ["ALL"]
+lint.ignore = ["D", "T201", "COM812", "ISC001"]
+lint.isort.split-on-trailing-comma = false
+format.skip-magic-trailing-comma = true
