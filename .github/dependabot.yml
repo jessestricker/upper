@@ -1,0 +1,8 @@
+# Copyright 2024 Jesse Stricker.
+# SPDX-License-Identifier: Apache-2.0
+
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule.interval: weekly
