@@ -46,7 +46,7 @@ NPM_EXE = USR_BIN_DIR / "npm"
 APT_REBOOT_REQUIRED_FILE = Path("/run/reboot-required")
 
 
-class Apt(PackageManager):
+class APT(PackageManager):
     @property
     def name(self) -> str:
         return "APT"
@@ -73,7 +73,7 @@ class Snap(PackageManager):
         _exec([SNAP_EXE, "refresh"], use_sudo=True)
 
 
-class Npm(PackageManager):
+class NPM(PackageManager):
     @property
     def name(self) -> str:
         return "npm"
@@ -113,7 +113,7 @@ class Npm(PackageManager):
             )
 
 
-PACKAGE_MANAGERS = [Apt(), Snap(), Npm()]
+PACKAGE_MANAGERS = [APT(), Snap(), NPM()]
 
 
 def main() -> int | None:
