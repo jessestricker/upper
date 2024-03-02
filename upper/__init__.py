@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import json
+import os
 import shlex
 import subprocess
 import sys
@@ -42,6 +43,7 @@ SUDO_EXE = USR_BIN_DIR / "sudo"
 APT_GET_EXE = USR_BIN_DIR / "apt-get"
 SNAP_EXE = USR_BIN_DIR / "snap"
 NPM_EXE = USR_BIN_DIR / "npm"
+PIPX_EXE = USR_BIN_DIR / "pipx"
 
 APT_REBOOT_REQUIRED_FILE = Path("/run/reboot-required")
 
@@ -113,7 +115,16 @@ class NPM(PackageManager):
             )
 
 
-PACKAGE_MANAGERS = [APT(), Snap(), NPM()]
+class Pipx(PackageManager):
+    @property
+    def name(self) -> str:
+        return "pipx"
+
+    def upgrade(self) -> None:
+        _exec([PIPX_EXE, "upgrade-all"], env={"USE_EMOJI": "0"})
+
+
+PACKAGE_MANAGERS = [APT(), Snap(), NPM(), Pipx()]
 
 
 def main() -> int | None:
@@ -149,15 +160,18 @@ def _exec(
     use_sudo: bool = False,
     capture_stdout: bool = False,
     valid_return_codes: set[int] | None = None,
+    env: dict[str, str] | None = None,
 ) -> str:
     if use_sudo:
         cmd = [SUDO_EXE, "--", *cmd]
 
-    logger.debug(lambda: f"executing: {shlex.join(str(x)for x in cmd)}")
-
     run_kwargs = dict[str, Any]()
     if capture_stdout:
-        run_kwargs |= {"stdout": subprocess.PIPE}
+        run_kwargs["stdout"] = subprocess.PIPE
+    if env is not None:
+        run_kwargs["env"] = os.environ | env
+
+    logger.debug(lambda: f"executing: {shlex.join(str(x) for x in cmd)}")
     result = subprocess.run(cmd, check=False, encoding="UTF-8", **run_kwargs)
 
     if valid_return_codes is None or result.returncode not in valid_return_codes:
