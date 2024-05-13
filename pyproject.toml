@@ -20,7 +20,7 @@ upper = "upper:main"
 python = "^3.12"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.3.0"
+ruff = "^0.4.4"
 
 [tool.ruff]
 target-version = "py312"
