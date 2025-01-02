@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "upper"
+dynamic = ["version"]
+description = "Upgrades all your packages!"
+requires-python = "~= 3.12"
+authors = [{ name = "Jesse Stricker" }]
+scripts.upper = "upper.cli:main"
+
+[tool.hatch.version]
+path = "src/upper/__init__.py"
+
+# type checking
+
+[tool.hatch.envs.typing]
+dependencies = ["mypy ~= 1.14"]
+scripts.check = "mypy {args:.}"
+
+[tool.mypy]
+strict = true
+
+# formatting, linting
+
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = ["ruff ~= 0.8"]
+config-path = "none"
+
+[tool.ruff]
+line-length = 100
+lint.select = ["ALL"]
+lint.ignore = [
+    "D",      # pydocstyle
+    "T20",    # flake8-print
+    "COM812", # missing-trailing-comma
+    "ISC001", # single-line-implicit-string-concatenation
+]
